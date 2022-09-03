@@ -14,19 +14,18 @@ class linkedList{
 
     getAllItems(){
         if(this.head){
-
-            //the current node in the iteration
-            let node = this.head;
-
-            //loop the list
-            let result = [];
-            for(let i = 0; i < this.length; i++){
-                result.push(node.data)
-                node = node.next;
-            }
-
-            return result;
+            return this
         }
+        return null
+    }
+
+    getByIndex(index){
+        if(!this.length || +index < 0 || +index >= this.length) return undefined
+        let node = this.head
+        for(let i = 0; i < +index; i++){
+            node = node.next;
+        }
+        return node;
     }
 
     push(val){
@@ -58,7 +57,12 @@ class linkedList{
     }
 
     unshift(val){
-        
+        if(!this.head) return this.push(val);
+        let newNode = new node(val)
+        newNode.next = this.head;
+        this.head = newNode
+        this.length++;
+        return this
     }
 
     pop(){
@@ -85,6 +89,71 @@ class linkedList{
             return this
         }
     }
+
+    shift(){
+        if(!this.head) return undefined
+        if(this.head && this.length === 1 ) return this.pop();
+        let newHead = this.head.next;
+        this.head.next = null;
+        this.head.data = null;
+        this.head = newHead;
+        this.length--;
+        return this;
+    }
+
+    set(index, val){
+        let node = this.getByIndex(index);
+        if(node){
+            node.data = val;
+            return node;
+        }
+        return undefined
+    }
+
+    insert(index, val){
+        let newNode = new node(val);
+        let nodeAtIndex = this.getByIndex(+index);
+        let prevNodeAtIndex = this.getByIndex(+index-1)
+        if(prevNodeAtIndex){
+            prevNodeAtIndex.next = newNode;
+            newNode.next = nodeAtIndex;
+            this.length++;
+            return this
+        }else{
+            return this.unshift(val)
+        }
+    }
+
+    remove(index){
+        let nodeAtIndex = this.getByIndex(+index);
+        let prevNodeAtIndex = this.getByIndex(+index-1)
+
+        if(prevNodeAtIndex){
+            prevNodeAtIndex.next = nodeAtIndex.next;
+            nodeAtIndex.val = null;
+            nodeAtIndex.next = null;
+            this.length--;
+            return this
+        }else{
+            return this.shift();
+        }
+    }
+
+    reverse(){
+        let node = this.head;
+        this.head = this.tail;
+        this.tail = node;
+        let next;
+        let prev = null;
+    
+        for(let i = 0; i < this.length; i++){
+            next = node.next;
+            node.next = prev
+            prev = node
+            node = next
+        }
+        return this;
+    }
 }
 
 let list = new linkedList();
@@ -93,6 +162,13 @@ list.push(2)
 list.push(3)
 list.push(4)
 list.push(5)
-console.log(list.push(6))
-console.log(list.getAllItems());
-console.log(list.pop());
+list.push(6)
+// list.pop();
+// list.unshift(0)
+// console.log(list.getByIndex(4))
+// console.log(list.getAllItems())
+// console.log(list.shift())
+// console.log(list.set(0,0))
+// console.log(list.insert(1,1))
+// console.log(list.remove(2))
+console.log(list.reverse())
